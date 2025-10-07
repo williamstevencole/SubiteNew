@@ -19,7 +19,6 @@
   "description": "",
   "dependencies": {
     "@supabase/supabase-js": "^2.74.0",
-    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
@@ -40,6 +39,7 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.7.0",
     "@types/pg": "^8.15.5",
+    "bcrypt": "^6.0.0",
     "nodemon": "^3.1.10",
     "sequelize-cli": "^6.6.3",
     "ts-node": "^10.9.2",

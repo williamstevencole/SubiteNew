@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { IconName, icons } from '@/constants/icons';
+import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface InputProps {
   label?: string;
@@ -42,8 +42,6 @@ export const Input: React.FC<InputProps> = ({
 
     if (error) {
       classes += 'border-status-error ';
-    } else if (isFocused) {
-      classes += 'border-primary ';
     } else {
       classes += 'border-border ';
     }
@@ -56,7 +54,7 @@ export const Input: React.FC<InputProps> = ({
   };
 
   const getIconColor = () => {
-    return isFocused ? '#3B82F6' : '#64748B'; // primary : text-muted
+    return isFocused ? '#3B82F6' : '#64748B';
   };
 
   return (

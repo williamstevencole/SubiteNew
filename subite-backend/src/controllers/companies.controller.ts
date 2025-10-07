@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Company, Vehicle, User } from "../database/models/index.js";
+import { Company, Vehicle, User } from "../database/database.js";
 import { logger } from "../utils/logger.js";
 import { createCursorPaginatedResponse, getCursorWhereClause } from "../services/pagination.js";
 import { UserRole } from "../types/auth.js";
@@ -115,7 +115,7 @@ export const getCompanyVehicles = async (req: Request, res: Response): Promise<v
     const response = createCursorPaginatedResponse(
       vehicles,
       parseInt(limit),
-      (vehicle) => vehicle.id
+      (vehicle) => (vehicle as any).id
     );
 
     logger.info("Company vehicles retrieved", {
@@ -155,9 +155,10 @@ export const createCompany = async (req: Request, res: Response): Promise<void> 
     }
 
     const company = await Company.create({ name });
+    const companyData = company.get() as any;
 
     logger.info("Company created", {
-      companyId: company.id,
+      companyId: companyData.id,
       managerId: auth.userId,
     });
 

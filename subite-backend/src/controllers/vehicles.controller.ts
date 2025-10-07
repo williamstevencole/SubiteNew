@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Vehicle, User, Company } from "../database/models/index.js";
+import { Vehicle, User, Company } from "../database/database.js";
 import { logger } from "../utils/logger.js";
 import { UserRole } from "../types/auth.js";
 
@@ -49,14 +49,15 @@ export const getVehicle = async (req: Request, res: Response): Promise<void> => 
     }
 
     // Role-based filtering
-    if (auth.role === UserRole.DRIVER && vehicle.driverId !== auth.userId) {
+    const vehicleData = vehicle.get() as any;
+    if (auth.role === UserRole.DRIVER && vehicleData.driverId !== auth.userId) {
       res.status(403).json({
         error: { code: "FORBIDDEN", message: "Drivers can only access their assigned vehicles" },
       });
       return;
     }
 
-    if (auth.role === UserRole.PASSENGER && !vehicle.active) {
+    if (auth.role === UserRole.PASSENGER && !vehicleData.active) {
       res.status(403).json({
         error: { code: "FORBIDDEN", message: "Vehicle not available" },
       });
@@ -130,13 +131,15 @@ export const createVehicle = async (req: Request, res: Response): Promise<void> 
 
     const vehicle = await Vehicle.create({
       name,
-      plate,
+      licensePlate: plate,
       driverId,
       companyId: auth.companyId,
     });
 
+    const newVehicleData = vehicle.get() as any;
+
     logger.info("Vehicle created", {
-      vehicleId: vehicle.id,
+      vehicleId: newVehicleData.id,
       managerId: auth.userId,
       companyId: auth.companyId,
     });

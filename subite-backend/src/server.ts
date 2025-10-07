@@ -1,8 +1,8 @@
 import app from "./app.js";
 import { env } from "./config/env.js";
 import { logger } from "./utils/logger.js";
-import { connectDB, syncDB } from "./database/index.js";
-import { runSeeds } from "./database/seeders/index.js";
+import { connectDB, syncDB } from "./database/database.js";
+import { runSeeds } from "./database/seed.js";
 
 const startServer = async () => {
   try {
@@ -38,7 +38,7 @@ const startServer = async () => {
         logger.info("HTTP server closed");
 
         try {
-          const { sequelize } = await import("./database/index.js");
+          const { sequelize } = await import("./database/database.js");
           await sequelize.close();
           logger.info("Database disconnected");
           process.exit(0);

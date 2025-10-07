@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User, Company } from "../database/models/index.js";
+import { User, Company } from "../database/database.js";
 import { logger } from "../utils/logger.js";
 import { createCursorPaginatedResponse, getCursorWhereClause } from "../services/pagination.js";
 import { UserRole } from "../types/auth.js";

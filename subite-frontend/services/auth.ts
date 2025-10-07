@@ -1,19 +1,7 @@
 import { apiClient } from './api';
+import { LoginCredentials, LoginResponse } from '@/types/auth';
 
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  token: string;
-  user: {
-    id: number;
-    email: string;
-    name?: string;
-    role: string;
-  };
-}
+export type { LoginCredentials, LoginResponse };
 
 export const authService = {
 

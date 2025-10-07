@@ -26,6 +26,13 @@ This is a React Native application built with Expo Router and styled using Nativ
   - `modal.tsx`: Modal screen accessible via navigation
 - `components/`: Shared UI components with barrel exports via `index.ts`
 - `constants/`: App constants including custom color palette
+- `types/`: TypeScript type definitions matching backend database models
+  - `auth.ts`: Authentication types (UserRole, AuthUser, LoginResponse)
+  - `user.ts`: User entity types
+  - `company.ts`: Company entity types
+  - `vehicle.ts`: Vehicle entity types
+  - `dailyRoute.ts`: DailyRoute entity types
+  - `index.ts`: Barrel export for all types
 - `global.css`: TailwindCSS imports for global styling
 
 ### Styling System
@@ -53,3 +60,32 @@ Uses NativeWind with a custom color palette defined in `tailwind.config.js`:
 - Strict mode enabled
 - Path alias `@/*` configured for clean imports
 - Includes NativeWind type definitions
+
+## Type System
+
+**IMPORTANT**: Always use types from the `types/` directory. These types are synchronized with the backend database models.
+
+### Available Types
+- Import types using: `import { User, UserRole, Company, Vehicle, DailyRoute } from '@/types'`
+- All entity types include `id`, `createdAt`, and `updatedAt` fields
+- Use `UserRole` enum for role checking: `UserRole.DRIVER`, `UserRole.MANAGER`, `UserRole.PASSENGER`
+- Auth types include `AuthUser` (authenticated user info) and `LoginResponse` (login API response)
+
+### Type Usage Examples
+```typescript
+import { User, UserRole, AuthUser } from '@/types';
+
+// Check user role
+if (user.role === UserRole.DRIVER) {
+  // Driver-specific logic
+}
+
+// Type-safe user object
+const user: User = {
+  id: 1,
+  email: 'test@example.com',
+  role: UserRole.PASSENGER,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+```
