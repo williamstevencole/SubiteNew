@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, Image, TouchableOpacity } from 'react-native';
+import { View, TextInput, Text, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { IconName, icons } from '@/constants/icons';
 
 interface InputProps {
   label?: string;
   placeholder?: string;
   value: string;
   onChangeText: (text: string) => void;
-  icon?: any; // Icons8 icon source
+  icon: IconName; // Icon name from constants/icons.ts (required)
   secureTextEntry?: boolean;
   keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
   multiline?: boolean;
@@ -36,7 +38,7 @@ export const Input: React.FC<InputProps> = ({
   const [showPassword, setShowPassword] = useState(!secureTextEntry);
 
   const getContainerClasses = () => {
-    let classes = 'flex-row items-center bg-primary-background border rounded-lg px-3 py-3 ';
+    let classes = 'flex-row items-center bg-primary-background border rounded-lg px-4 py-3 ';
 
     if (error) {
       classes += 'border-status-error ';
@@ -53,7 +55,7 @@ export const Input: React.FC<InputProps> = ({
     return classes;
   };
 
-  const getIconTintColor = () => {
+  const getIconColor = () => {
     return isFocused ? '#3B82F6' : '#64748B'; // primary : text-muted
   };
 
@@ -64,13 +66,12 @@ export const Input: React.FC<InputProps> = ({
       )}
 
       <View className={getContainerClasses()}>
-        {icon && (
-          <Image
-            source={icon}
-            className="w-5 h-5 mr-3"
-            style={{ tintColor: getIconTintColor() }}
-          />
-        )}
+        <Ionicons
+          name={icons[icon] as any}
+          size={20}
+          color={getIconColor()}
+          style={{ flexShrink: 0 }}
+        />
 
         <TextInput
           value={value}
@@ -85,17 +86,25 @@ export const Input: React.FC<InputProps> = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           className={`flex-1 text-text text-base ${multiline ? 'min-h-20' : ''} ${inputClassName || ''}`}
+          style={{
+            marginLeft: 12,
+            marginRight: secureTextEntry && icon === 'lock' ? 12 : 0,
+            minWidth: 0
+          }}
           textAlignVertical={multiline ? 'top' : 'center'}
         />
 
-        {secureTextEntry && (
+        {secureTextEntry && icon === 'lock' && (
           <TouchableOpacity
             onPress={() => setShowPassword(!showPassword)}
-            className="ml-2"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            style={{ flexShrink: 0 }}
           >
-            <Text className="text-text-muted text-xs">
-              {showPassword ? 'Hide' : 'Show'}
-            </Text>
+            <Ionicons
+              name={showPassword ? icons.eyeOpen as any : icons.eyeClosed as any}
+              size={20}
+              color={getIconColor()}
+            />
           </TouchableOpacity>
         )}
       </View>

@@ -37,8 +37,7 @@ export const Button: React.FC<ButtonProps> = ({
         classes += 'px-6 py-4 ';
         break;
     }
-
-    // Variant styles
+    
     switch (variant) {
       case 'primary':
         classes += 'bg-primary ';

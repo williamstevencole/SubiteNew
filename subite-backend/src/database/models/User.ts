@@ -12,6 +12,7 @@ export interface UserAttributes {
   authId?: string;
   notificationId?: string;
   companyId?: number;
+  password?: string; // Make password optional
 }
 
 export interface UserCreationAttributes {
@@ -22,26 +23,28 @@ export interface UserCreationAttributes {
   authId?: string;
   notificationId?: string;
   companyId?: number;
+  password: string;
 }
 
-export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  public id!: number;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public email!: string;
-  public name?: string;
-  public phone?: string;
-  public role!: UserRole;
-  public authId?: string;
-  public notificationId?: string;
-  public companyId?: number;
+export class User extends Model<UserAttributes, UserCreationAttributes> {
+  declare id: number;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare email: string;
+  declare name?: string;
+  declare phone?: string;
+  declare role: UserRole;
+  declare authId?: string;
+  declare notificationId?: string;
+  declare companyId?: number;
+  declare password?: string;
 
   // Associations
-  public company?: any;
-  public vehiclesDriven?: any[];
-  public dailyRoutesDriven?: any[];
-  public attendances?: any[];
-  public filesOwned?: any[];
+  declare company?: any;
+  declare vehiclesDriven?: any[];
+  declare dailyRoutesDriven?: any[];
+  declare attendances?: any[];
+  declare filesOwned?: any[];
 }
 
 export const UserModel = (sequelize: Sequelize) => {
@@ -96,6 +99,10 @@ export const UserModel = (sequelize: Sequelize) => {
           model: "companies",
           key: "id",
         },
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
     },
     {

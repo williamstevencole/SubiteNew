@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { User, Company } from "../database/models/index.js";
 import { logger } from "../utils/logger.js";
 import { env } from "../config/env.js";
@@ -10,10 +11,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
-    // For demo purposes, we'll use a simple password check
-    // In production, you should hash passwords properly
     const user = await User.findOne({
       where: { email },
+      attributes: ['id', 'email', 'password', 'role', 'companyId'],
       include: [{
         model: Company,
         as: 'company',
@@ -21,16 +21,18 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       }]
     });
 
-    if (!user) {
+    logger.debug("User fetched from database", { user });
+
+    if (!user || !user.password) {
       res.status(401).json({
         error: { code: "INVALID_CREDENTIALS", message: "Invalid email or password" },
       });
       return;
     }
 
-    // For demo, accept any password as "password123"
-    // In production, use bcrypt.compare(password, user.hashedPassword)
-    if (password !== "password123") {
+    // Compare the provided password with the hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       res.status(401).json({
         error: { code: "INVALID_CREDENTIALS", message: "Invalid email or password" },
       });
@@ -38,23 +40,23 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Generate JWT token
+    logger.debug("User fields for JWT", {
+      id: user.id,
+      role: user.role,
+      companyId: user.companyId,
+      email: user.email
+    });
+
     const token = jwt.sign(
       {
-        sub: user.id.toString(),
+        sub: user.id?.toString(),
         role: user.role,
-        companyId: user.companyId?.toString(),
+        companyId: user.companyId ? user.companyId.toString() : undefined,
         email: user.email,
       },
       env.JWT_ACCESS_SECRET,
       { expiresIn: "24h" }
     );
-
-    logger.info("User logged in successfully", {
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-      companyId: user.companyId,
-    });
 
     res.json({
       data: {
@@ -69,14 +71,15 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       },
     });
   } catch (error) {
-    logger.error("Error during login", { error, email: req.body?.email });
+    const errorMessage = error instanceof Error ? error.stack || error.message : error;
+    logger.error("Error during login", { error: errorMessage, email: req.body?.email });
     res.status(500).json({
       error: { code: "INTERNAL_ERROR", message: "Internal server error" },
     });
   }
 };
 
-// POST /auth/register - Register new user (for demo purposes)
+// POST /auth/register
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, name, phone, role, companyId } = req.body;
@@ -90,13 +93,14 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Create new user
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = await User.create({
       email,
       name,
       phone,
       role: role || UserRole.PASSENGER,
       companyId,
+      password: hashedPassword,
     });
 
     // Generate JWT token

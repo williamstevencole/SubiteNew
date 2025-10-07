@@ -1,12 +1,12 @@
 import { User, Company } from "../models/index.js";
 import { UserRole } from "../../types/auth.js";
 import { logger } from "../../utils/logger.js";
+import bcrypt from "bcrypt";
 
 export const seedUsers = async () => {
   logger.info("Seeding users...");
 
   try {
-    // Check if users already exist
     const existingCount = await User.count();
     if (existingCount > 0) {
       logger.info(`Users already seeded (${existingCount} users exist)`);
@@ -28,6 +28,7 @@ export const seedUsers = async () => {
         phone: "+57 300 123 4567",
         role: UserRole.MANAGER,
         companyId: companies[0]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
       {
         email: "manager@valle.com",
@@ -35,6 +36,7 @@ export const seedUsers = async () => {
         phone: "+57 310 234 5678",
         role: UserRole.MANAGER,
         companyId: companies[1]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
       {
         email: "manager@bogota.com",
@@ -42,6 +44,7 @@ export const seedUsers = async () => {
         phone: "+57 320 345 6789",
         role: UserRole.MANAGER,
         companyId: companies[2]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
 
       // Drivers
@@ -51,6 +54,7 @@ export const seedUsers = async () => {
         phone: "+57 301 111 2222",
         role: UserRole.DRIVER,
         companyId: companies[0]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
       {
         email: "driver2@medellin.com",
@@ -58,6 +62,7 @@ export const seedUsers = async () => {
         phone: "+57 302 333 4444",
         role: UserRole.DRIVER,
         companyId: companies[0]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
       {
         email: "driver1@valle.com",
@@ -65,6 +70,7 @@ export const seedUsers = async () => {
         phone: "+57 311 555 6666",
         role: UserRole.DRIVER,
         companyId: companies[1]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
       {
         email: "driver1@bogota.com",
@@ -72,6 +78,7 @@ export const seedUsers = async () => {
         phone: "+57 321 777 8888",
         role: UserRole.DRIVER,
         companyId: companies[2]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
 
       // Passengers
@@ -81,6 +88,7 @@ export const seedUsers = async () => {
         phone: "+57 305 111 1111",
         role: UserRole.PASSENGER,
         companyId: companies[0]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
       {
         email: "passenger2@example.com",
@@ -88,6 +96,7 @@ export const seedUsers = async () => {
         phone: "+57 315 222 2222",
         role: UserRole.PASSENGER,
         companyId: companies[1]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
       {
         email: "passenger3@example.com",
@@ -95,6 +104,7 @@ export const seedUsers = async () => {
         phone: "+57 325 333 3333",
         role: UserRole.PASSENGER,
         companyId: companies[2]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
       {
         email: "passenger4@example.com",
@@ -102,6 +112,7 @@ export const seedUsers = async () => {
         phone: "+57 306 444 4444",
         role: UserRole.PASSENGER,
         companyId: companies[0]!.id,
+        password: await bcrypt.hash("password123", 10),
       },
 
       // Admin user (super manager)
@@ -111,6 +122,7 @@ export const seedUsers = async () => {
         phone: "+57 300 000 0000",
         role: UserRole.MANAGER,
         companyId: undefined, // No company = can see all
+        password: await bcrypt.hash("password123", 10),
       },
     ];
 

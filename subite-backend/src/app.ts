@@ -9,7 +9,6 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
-// Security middleware
 app.use(helmet());
 app.use(cors({
   origin: env.NODE_ENV === "production" ? false : "*", // Configure properly for production

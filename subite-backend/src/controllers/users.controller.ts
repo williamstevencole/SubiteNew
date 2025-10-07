@@ -3,6 +3,7 @@ import { User, Company } from "../database/models/index.js";
 import { logger } from "../utils/logger.js";
 import { createCursorPaginatedResponse, getCursorWhereClause } from "../services/pagination.js";
 import { UserRole } from "../types/auth.js";
+import bcrypt from "bcrypt";
 
 // GET /users/me - Get current user profile
 export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
@@ -114,7 +115,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { auth } = req;
-    const { email, name, phone, role } = req.body;
+    const { email, name, phone, role, password} = req.body;
 
     if (!auth) {
       res.status(401).json({
@@ -143,6 +144,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       phone,
       role,
       companyId: auth.companyId,
+      password: await bcrypt.hash(password, 10),
     });
 
     logger.info("User created", {
