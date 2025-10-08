@@ -1,4 +1,4 @@
-# 🚌 SubiTe — README de Funcionalidad
+# 🚌 Subite
 
 > Plataforma B2B para gestión de transporte privado (multi-empresa, multi-rol) con seguimiento en tiempo real, control de asistencia vía QR y reportes operativos.
 
